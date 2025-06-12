@@ -36,7 +36,7 @@ cd task-manager
 For frontend
 - cd client
 - npm install
-- 
+
 For backend
 - cd ../server
 - npm install
