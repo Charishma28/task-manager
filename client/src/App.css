@@ -1,0 +1,86 @@
+/* App container */
+.app-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Title */
+.app-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Task input and add button */
+.task-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.task-form input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.task-form button {
+  padding: 10px 16px;
+  font-size: 16px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.task-form button:hover {
+  background-color: #125aa0;
+}
+
+/* Task list */
+.task-list {
+  list-style: none;
+  padding: 0;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+}
+
+.task-title {
+  flex: 1;
+}
+
+/* Buttons inside task */
+.task-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.task-buttons button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.task-buttons .status {
+  color: green;
+}
+
+.task-buttons .not-done {
+  color: red;
+}
+
+.task-buttons .delete {
+  color: darkred;
+}
