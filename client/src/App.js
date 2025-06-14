@@ -1,80 +1,62 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import {
+  fetchTasks as getTasks,
+  addTask,
+  updateTask,
+  deleteTask,
+} from './services/taskService';
 
 function App() {
-  const [tasks, setTasks] = useState([]); // list of tasks
-  const [newTask, setNewTask] = useState(''); // new task input
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState('');
 
-  // get tasks from the server
-  const fetchTasks = () => {
-    fetch('http://localhost:5000/tasks')
-      .then((res) => res.json())
-      .then((data) => setTasks(data))
-      .catch((err) => console.error("Error fetching tasks:", err));
-  };
-
-  // run only one time when page loads
+  // Fetch all tasks when the app loads
   useEffect(() => {
-    fetchTasks();
+    fetchAllTasks();
   }, []);
 
-  // when user clicks ✅ or ❌
+  const fetchAllTasks = () => {
+    getTasks()
+      .then((res) => setTasks(res.data))
+      .catch((err) => console.error('Error fetching tasks:', err));
+  };
+
+  const handleAddTask = () => {
+    if (!newTask.trim()) return;
+
+    addTask({ title: newTask, completed: false })
+      .then((res) => {
+        setTasks([...tasks, res.data]);
+        setNewTask('');
+      })
+      .catch((err) => console.error('Error adding task:', err));
+  };
+
   const toggleComplete = (id, newStatus) => {
-    fetch(`http://localhost:5000/tasks/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ completed: newStatus }),
-    })
-      .then((res) => res.json())
-      .then((updatedTask) => {
+    updateTask(id, { completed: newStatus })
+      .then((res) => {
         setTasks((prev) =>
           prev.map((task) =>
-            task.id === id ? { ...task, completed: updatedTask.completed } : task
+            task.id === id ? { ...task, completed: res.data.completed } : task
           )
         );
       })
       .catch((err) => console.error('Error updating task status:', err));
   };
 
-  // when user clicks delete ❌
   const handleDelete = (id) => {
-    fetch(`http://localhost:5000/tasks/${id}`, {
-      method: 'DELETE',
-    })
+    deleteTask(id)
       .then(() => {
         setTasks((prev) => prev.filter((task) => task.id !== id));
       })
       .catch((err) => console.error('Error deleting task:', err));
   };
-  
-  // when user clicks Add Task button
-  const handleAddTask = () => {
-    if (!newTask.trim()) return;
-
-    fetch('http://localhost:5000/tasks', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        title: newTask,
-        completed: false,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setTasks([...tasks, data]); // add the new task to the list
-        setNewTask(''); // clear the input
-      })
-      .catch((err) => console.error("Error adding task:", err));
-  };
 
   return (
     <div className="app-container">
       <h1 className="app-title">📝 Task Manager</h1>
-  
+
       <div className="task-form">
         <input
           type="text"
@@ -84,7 +66,7 @@ function App() {
         />
         <button onClick={handleAddTask}>➕ Add Task</button>
       </div>
-  
+
       {tasks.length === 0 ? (
         <p>No tasks yet.</p>
       ) : (
@@ -99,7 +81,12 @@ function App() {
                 >
                   {task.completed ? '✅ Done' : '❌ Not done'}
                 </button>
-                <button className="delete" onClick={() => handleDelete(task.id)}>❌ Delete</button>
+                <button
+                  className="delete"
+                  onClick={() => handleDelete(task.id)}
+                >
+                  ❌ Delete
+                </button>
               </div>
             </li>
           ))}
@@ -107,7 +94,6 @@ function App() {
       )}
     </div>
   );
-  
 }
 
 export default App;
