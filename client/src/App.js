@@ -10,8 +10,8 @@ import {
 function App() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
+  const [error, setError] = useState(''); // ✅ error state
 
-  // Fetch all tasks when the app loads
   useEffect(() => {
     fetchAllTasks();
   }, []);
@@ -19,18 +19,29 @@ function App() {
   const fetchAllTasks = () => {
     getTasks()
       .then((res) => setTasks(res.data))
-      .catch((err) => console.error('Error fetching tasks:', err));
+      .catch((err) => {
+        console.error('Error fetching tasks:', err);
+        setError("Couldn't fetch tasks.");
+      });
   };
 
   const handleAddTask = () => {
-    if (!newTask.trim()) return;
+    if (!newTask.trim()) {
+      setError('Title is required.');
+      return;
+    }
 
     addTask({ title: newTask, completed: false })
       .then((res) => {
         setTasks([...tasks, res.data]);
         setNewTask('');
+        setError(''); // ✅ clear error
       })
-      .catch((err) => console.error('Error adding task:', err));
+      .catch((err) => {
+        console.error('Error adding task:', err);
+        const errMsg = err?.response?.data?.error || 'Failed to add task.';
+        setError(errMsg);
+      });
   };
 
   const toggleComplete = (id, newStatus) => {
@@ -42,7 +53,10 @@ function App() {
           )
         );
       })
-      .catch((err) => console.error('Error updating task status:', err));
+      .catch((err) => {
+        console.error('Error updating task status:', err);
+        setError("Couldn't update task.");
+      });
   };
 
   const handleDelete = (id) => {
@@ -50,7 +64,10 @@ function App() {
       .then(() => {
         setTasks((prev) => prev.filter((task) => task.id !== id));
       })
-      .catch((err) => console.error('Error deleting task:', err));
+      .catch((err) => {
+        console.error('Error deleting task:', err);
+        setError("Couldn't delete task.");
+      });
   };
 
   return (
@@ -62,10 +79,16 @@ function App() {
           type="text"
           value={newTask}
           placeholder="Enter task title"
-          onChange={(e) => setNewTask(e.target.value)}
+          onChange={(e) => {
+            setNewTask(e.target.value);
+            setError(''); // ✅ clear error when typing
+          }}
         />
         <button onClick={handleAddTask}>➕ Add Task</button>
       </div>
+
+      {/* ✅ Display error message */}
+      {error && <p style={{ color: 'red', marginBottom: '1rem' }}>{error}</p>}
 
       {tasks.length === 0 ? (
         <p>No tasks yet.</p>
