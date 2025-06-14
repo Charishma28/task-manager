@@ -17,6 +17,7 @@ A simple full-stack Task Manager web application built using React for the front
 - body-parser
 - JSON as a mock database (`tasks.json`)
 - Manual input validation using `if` conditions (no Joi)
+- Singleton class (TaskManager) to manage task operations safely and modularly
 
 ---
 
@@ -24,21 +25,21 @@ A simple full-stack Task Manager web application built using React for the front
 
 task-manager/
 │
-├── client/ # React frontend
-│ ├── public/
-│ ├── src/
-│ │ ├── App.js
-│ │ ├── TaskForm.js
-│ │ ├── TaskList.js
-│ │ ├── services/
-│ │ │ └── taskService.js
-│ │ └── index.js
-│ └── package.json
+├── client/               # React frontend
+│   ├── public/
+│   ├── src/
+│   │   ├── App.js
+│   │   ├── TaskForm.js
+│   │   ├── TaskList.js
+│   │   └── index.js
+│   └── package.json
 │
-├── server/ # Express backend
-│ ├── server.js
-│ ├── tasks.json
-│ └── package.json
+├── server/               # Express backend
+│   ├── server.js         # Main server file (uses TaskManager)
+│   ├── taskManager.js    # Singleton class for managing tasks
+│   ├── tasks.json        # JSON file acting as a mock DB
+│   └── package.json
+
 
 🚀 Getting Started
 1. Clone the repository
@@ -81,13 +82,18 @@ Open http://localhost:3000 in your browser.
 7) Error handling for file operations
 
 8) Loading states and button disable feedback
+   
+9) ✅ Singleton class to manage task logic in backend
 
 ✅ Design Decisions
-- Used plain CSS instead of Tailwind or Bootstrap for minimalism and simplicity.
-  
-- Used manual input validation instead of external libraries for simplicity.
+- Plain CSS used instead of a UI framework for simplicity and clarity.
 
-- Used JSON file for backend data storage instead of a real database to keep setup light.
+- JSON file used for persistence to avoid the overhead of setting up a full database for a simple demo.
 
-- Separated client and server for better structure and scalability.
+- Separation of Concerns: Task logic moved into taskManager.js for better modularity.
 
+- Singleton Pattern used for safe, centralized task management and future scalability.
+
+- Loading states and disabled buttons implemented on frontend for improved user experience.
+
+- Basic input validation and appropriate HTTP status codes (400, 404, 500) included in backend.
