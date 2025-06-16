@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function TaskList({ tasks, onEdit, onDelete, onToggle }) {
+function TaskList({ tasks, onDelete, onToggle }) {
   const [error, setError] = useState('');
 
   const handleDelete = async (id) => {
@@ -38,7 +38,6 @@ function TaskList({ tasks, onEdit, onDelete, onToggle }) {
             <span style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>
               {task.title}
             </span>
-            <button onClick={() => onEdit(task)}>✏️</button>
             <button onClick={() => handleDelete(task.id)}>🗑️</button>
           </li>
         ))}

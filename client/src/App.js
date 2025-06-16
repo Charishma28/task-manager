@@ -10,7 +10,7 @@ import {
 function App() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
-  const [error, setError] = useState(''); // ✅ error state
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetchAllTasks();
@@ -35,7 +35,7 @@ function App() {
       .then((res) => {
         setTasks([...tasks, res.data]);
         setNewTask('');
-        setError(''); // ✅ clear error
+        setError('');
       })
       .catch((err) => {
         console.error('Error adding task:', err);
@@ -60,6 +60,9 @@ function App() {
   };
 
   const handleDelete = (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this task?");
+    if (!confirmDelete) return;
+
     deleteTask(id)
       .then(() => {
         setTasks((prev) => prev.filter((task) => task.id !== id));
@@ -81,13 +84,12 @@ function App() {
           placeholder="Enter task title"
           onChange={(e) => {
             setNewTask(e.target.value);
-            setError(''); // ✅ clear error when typing
+            setError('');
           }}
         />
         <button onClick={handleAddTask}>➕ Add Task</button>
       </div>
 
-      {/* ✅ Display error message */}
       {error && <p style={{ color: 'red', marginBottom: '1rem' }}>{error}</p>}
 
       {tasks.length === 0 ? (
